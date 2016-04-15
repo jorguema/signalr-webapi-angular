@@ -1,0 +1,43 @@
+<!doctype html>
+<html ng-app="angular-signalr">
+
+<head>
+    <title>Angular-signalr</title>
+    <script src="node_modules/angular/angular.js"></script>
+    <script src="app/app.js"></script>
+    <script src="app/jquery-1.10.2.js"></script>
+    <script src="app/jquery.signalR-2.2.0.js"></script>
+    <script src="app/generated-hub-proxy.js"></script>
+</head>
+
+<body>
+    <div data-ng-controller="homeCtrl">
+        <h1>Hello Angular-signalr!</h1>
+        <hr>
+        <!--<input type="text" ng-model="name" placeholder="Enter your name">
+        <button value="Go chat" data-ng-click="connect(name)"></button>
+        <div data-ng-show="connected">
+            <div class="container"> 
+                <input type="text" id="message" />
+                <input type="button" id="sendmessage" value="Send" />
+                <input type="hidden" id="displayname" />
+                <ul id="discussion"></ul>
+            </div>
+        </div>-->
+        <div class="container">
+            <input type="text" id="message" />
+            <input type="button" id="sendmessage" value="Send" />
+            <ul id="discussion"></ul>
+
+            <hr/>
+
+            <input type="text" id="message2" />
+            <input type="button" id="sendmessage2" value="Send" />
+            <ul id="discussion2"></ul>
+
+            <input type="hidden" id="displayname" />
+        </div>
+    </div>
+</body>
+
+</html>
