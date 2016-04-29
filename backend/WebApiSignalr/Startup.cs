@@ -15,7 +15,8 @@ namespace WebApiSignalr
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
-
+            //app.UseCors(CorsOptions.AllowAll);
+            //config.EnableCors(new EnableCorsAttribute(Properties.Settings.Default.Cors, "", ""))
             app.Map("/signalr", map =>
             {
                 // Setup the CORS middleware to run before SignalR.

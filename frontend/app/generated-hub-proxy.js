@@ -78,19 +78,15 @@
             registerHubProxies(proxies, false);
         });
 
-        proxies['chatHub'] = this.createHubProxy('chatHub'); 
-        proxies['chatHub'].client = { };
-        proxies['chatHub'].server = {
-            send: function (name, message) {
-                return proxies['chatHub'].invoke.apply(proxies['chatHub'], $.merge(["Send"], $.makeArray(arguments)));
-             }
-        };
+        proxies['todoHub'] = this.createHubProxy('todoHub'); 
+        proxies['todoHub'].client = { };
+        proxies['todoHub'].server = {
+            delete: function (name, message) {
+                return proxies['todoHub'].invoke.apply(proxies['todoHub'], $.merge(["Delete"], $.makeArray(arguments)));
+             },
 
-        proxies['notificationHub'] = this.createHubProxy('notificationHub'); 
-        proxies['notificationHub'].client = { };
-        proxies['notificationHub'].server = {
             send: function (name, message) {
-                return proxies['notificationHub'].invoke.apply(proxies['notificationHub'], $.merge(["Send"], $.makeArray(arguments)));
+                return proxies['todoHub'].invoke.apply(proxies['todoHub'], $.merge(["Send"], $.makeArray(arguments)));
              }
         };
 
