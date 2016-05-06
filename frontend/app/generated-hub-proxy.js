@@ -78,6 +78,14 @@
             registerHubProxies(proxies, false);
         });
 
+        proxies['chatHub'] = this.createHubProxy('chatHub'); 
+        proxies['chatHub'].client = { };
+        proxies['chatHub'].server = {
+            send: function (name, message) {
+                return proxies['chatHub'].invoke.apply(proxies['chatHub'], $.merge(["Send"], $.makeArray(arguments)));
+             }
+        };
+
         proxies['todoHub'] = this.createHubProxy('todoHub'); 
         proxies['todoHub'].client = { };
         proxies['todoHub'].server = {

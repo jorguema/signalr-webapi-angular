@@ -1,9 +1,4 @@
-﻿<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
-<div class="row">
+﻿<div class="row">
 
     <br />
     <hr />
@@ -15,11 +10,6 @@
         <input type="button" id="sendmessage" value="Send" />
         <ul id="discussion"></ul>
         <hr />
-        @*<input type="text" id="message2" />
-        <input type="button" id="sendmessage2" value="Send" />
-        <ul id="discussion2"></ul>*@
-
-        
 
     </div>
 
@@ -34,16 +24,12 @@
         <script>
         $(function () {
             // Reference the auto-generated proxy for the hub.
-            var chat = $.connection.todoHub;
+            var chat = $.connection.chatHub;
             // Create a function that the hub can call back to display messages.
-            chat.client.addTodoItem = function (name, message) {
+            chat.client.addItem = function (name, message) {
                 // Add the message to the page.
                 $('#discussion').append('<li><strong>' + htmlEncode(name)
                     + '</strong>: ' + htmlEncode(message) + '</li>');
-            };
-            chat.client.deleteTodoItem = function (name, message) {
-                // Add the message to the page.
-                debugger;
             };
             // Get the user name and store it to prepend to messages.
             $('#displayname').val(prompt('Enter your name:', ''));
@@ -59,26 +45,6 @@
                 });
             });
 
-
-
-            //var notification = $.connection.notificationHub;
-            //// Create a function that the hub can call back to display messages.
-            //notification.client.addNotification = function (name, message) {
-            //    // Add the message to the page.
-            //    $('#discussion2').append('<li><strong>' + htmlEncode(name)
-            //        + '</strong>: ' + htmlEncode(message) + '</li>');
-            //};
-            //// Set initial focus to message input box.
-            //$('#message2').focus();
-            //// Start the connection.
-            //$.connection.hub.start().done(function () {
-            //    $('#sendmessage2').click(function () {
-            //        // Call the Send method on the hub.
-            //        notification.server.send($('#displayname').val(), $('#message2').val());
-            //        // Clear text box and reset focus for next comment.
-            //        $('#message2').val('').focus();
-            //    });
-            //});
         });
         // This optional function html-encodes messages for display in the page.
         function htmlEncode(value) {

@@ -23,7 +23,7 @@
             display: inline;
         }
         
-        .mdl-button {
+        .testbutton .mdl-button {
             height: 45px;
             width: 45px;
             min-height: 45px;
@@ -48,6 +48,10 @@
         .x-ng-cloak {
             display: none !important;
         }
+        
+        .mdl-textfield {
+            width: 150px !important;
+        }
     </style>
 </head>
 
@@ -62,57 +66,65 @@
             </div>
             <hr>
         </div>
-        <div data-ng-if="showAll">
+        <div data-ng-show="showAll">
             <div class="container" data-ng-controller="todoCtrl">
-                <div class="row" data-ng-show="loading">
-                    <div class="col-xs-12">
-                        <div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
-                    </div>
-                </div>
-                <div data-ng-show="!loading">
-                    <div class="row">
+                <div class="row">
+                    <div class="col-xs-6">
+                    <div class="row" data-ng-show="loading">
                         <div class="col-xs-12">
-                            <h3>Todo list</h3>
+                            <div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <ul class="demo-list-control mdl-list">
-                                <li class="mdl-list__item" data-ng-repeat="todo in todos">
-                                    <span>
+                    <div data-ng-show="!loading">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h3>Todo list</h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <ul class="demo-list-control mdl-list">
+                                    <li data-ng-repeat="todo in todos">
+                                        <span>
                                     <label class="mdl-list__item-primary-content" for="{{'list-checkbox-'+$index}}">
                                     {{todo}} <span data-ng-click="deleteTodoItem(todo)" class="delete"> (delete)</span>
-                                    </span>
-                                </li>
-                            </ul>
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 testbutton">
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="text" id="sample3" size="30" ng-model="todoText">
+                                    <label class="mdl-textfield__label" for="sample3">Add new todo here</label>
+                                </div>
+
+                                <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" data-ng-click="addTodo(todoText)">
+                                <i class="material-icons">add</i>
+                            </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input class="mdl-textfield__input" type="text" id="sample3" size="30" ng-model="todoText">
-                                <label class="mdl-textfield__label" for="sample3">Add new todo here</label>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="row">
+                             <ul id="discussionchat"></ul>
+                            <input type="text" id="messagechat" />
+                            <input type="button" id="sendmessagechat" value="Send" ng-click="clickchat()"  />
+                            <div data-ng-controller="chatCtrl">
+                                <br/><br/>
+                                <button class="btn" data-ng-click="blockChat()">
+                                    GOD MODE
+                                    </button>
                             </div>
-
-                            <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored" data-ng-click="addTodo(todoText)">
-                        <i class="material-icons">add</i>
-                    </button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="container">
-                <input type="text" id="message" />
-                <input type="button" id="sendmessage" value="Send" />
+                <h2>LOG</h1>
                 <ul id="discussion"></ul>
-
-                <hr/>
-
-                <input type="text" id="message2" />
-                <input type="button" id="sendmessage2" value="Send" />
-                <ul id="discussion2"></ul>
-
-                <input type="hidden" id="displayname" />
             </div>
         </div>
     </div>

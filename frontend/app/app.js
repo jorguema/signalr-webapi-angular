@@ -2,7 +2,7 @@ var backendUrl = "http://localhost:16247/";
 var apiUrl = backendUrl + "api";
 
 var app = angular.module('angular-signalr', [])
-    .controller('todoCtrl', ["$scope", "$http", "$timeout", function ($scope, $http, $timeout) {
+    .controller('todoCtrl', ["$scope", "$http", "$timeout", "$rootScope", function ($scope, $http, $timeout, $rootScope) {
         $scope.todos = [];
         $scope.todoText = null;
 
@@ -14,7 +14,12 @@ var app = angular.module('angular-signalr', [])
         };
 
         $scope.deleteTodoItem = function (todoItem) {
-            deleteTodo(todoItem);
+            $http({
+                method: 'DELETE',
+                url: apiUrl + '/todos',
+                data: { value: todoItem }
+            });
+            deleteItemInList(todoItem);
         }
 
 
@@ -39,92 +44,98 @@ var app = angular.module('angular-signalr', [])
             })
         }
 
-        function deleteTodo(todoItem) {
-            $http({
-                method: 'DELETE',
-                url: apiUrl + '/todos',
-                data: { value: todoItem }
-            })
-        }
-
-        function handleSignalrTodo() {
-
+        function deleteItemInList(todoItem) {
+            var index = $scope.todos.indexOf(todoItem);
+            if (index != -1) {
+                $scope.todos.splice(index, 1);
+                $scope.$apply();
+            }
         }
 
         getTodos();
 
-    }])
+        $rootScope.$on('deletedtodo', function (event, data) {
+            deleteItemInList(data.message);
+        });
+        $rootScope.$on('addedtodo', function (event, data) {
+            if ($scope.todos.indexOf(data.message) == -1) {
+                $scope.todos.push(data.message);
+                $scope.$apply();
+            }
+        });
 
+
+    }])
+    
+    .controller('chatCtrl', ["$scope", "$rootScope","$http", function ($scope, $rootScope,$http) {
+        $scope.blockChat = function () {
+            $http({
+                method: 'POST',
+                url: apiUrl + '/chats'
+            });
+        }
+    }])
+    
     .controller('homeCtrl', ["$scope", "$rootScope", function ($scope, $rootScope) {
         $scope.setUserName = function (name) {
             $rootScope.userName = name;
             $scope.showAll = true;
-        }
-        
-        $.connection.hub.url = backendUrl + '/signalr';
 
-        var chat = $.connection.todoHub;
-        // Create a function that the hub can call back to display messages.
-        chat.client.addTodoItem = function (name, message) {
-            // Add the message to the page.
-            $('#discussion').append('<li><strong>' + htmlEncode(name)
-                + '</strong>: ' + htmlEncode(message) + '</li>');
-        };
-        chat.client.deleteTodoItem = function (name, message) {
-            // Add the message to the page.
-            debugger;
-        };
-        // Get the user name and store it to prepend to messages.
-        $('#displayname').val(prompt('Enter your name:', ''));
-        // Set initial focus to message input box.
-        $('#message').focus();
-        // Start the connection.
-        $.connection.hub.start().done(function () {
-            $('#sendmessage').click(function () {
-                // Call the Send method on the hub.
-                chat.server.send($('#displayname').val(), $('#message').val());
-                // Clear text box and reset focus for next comment.
-                $('#message').val('').focus();
+            $.connection.hub.url = backendUrl + '/signalr';
+            connectSignalrTodo();
+            connectSignalrChat();
+            
+            $.connection.hub.start().done(function () {
+                 
             });
-        });
+        }
 
+        function connectSignalrTodo() {
+                var todohub = $.connection.todoHub;
+                // Create a function that the hub can call back to display messages.
+                todohub.client.addTodoItem = function (name, message) {
+                    // Add the message to the page.
+                    $rootScope.$emit('addedtodo', { name: name, message: message });
+                    $('#discussion').append('<li><strong>' + htmlEncode(name)
+                         + '</strong>: ' + htmlEncode(message) + '</li>');
+                };
+                
+                todohub.client.deleteTodoItem = function (name, message) {
+                    // Add the message to the page.
+                    $rootScope.$emit('deletedtodo', { name: name, message: message });
+                    $('#discussion').append('<li><strong>' + htmlEncode(name)
+                         + '</strong>: ' + htmlEncode(message) + '</li>');
+                };           
+               
+        };
 
+        function connectSignalrChat() {
+            var chat = $.connection.chatHub;
 
-        // var notification = $.connection.notificationHub;
-        // // Create a function that the hub can call back to display messages.
-        // notification.client.addNotification = function (name, message) {
-        //     // Add the message to the page.
-        //     $('#discussion2').append('<li><strong>' + htmlEncode(name)
-        //         + '</strong>: ' + htmlEncode(message) + '</li>');
-        // };
-        // // Set initial focus to message input box.
-        // $('#message2').focus();
-        // // Start the connection.
-        // $.connection.hub.start().done(function () {
-        //     $('#sendmessage2').click(function () {
-        //         // Call the Send method on the hub.
-        //         notification.server.send($('#displayname').val(), $('#message2').val());
-        //         // Clear text box and reset focus for next comment.
-        //         $('#message2').val('').focus();
-        //     });
-        // });
+            chat.client.addItem = function (name, message) {
+                // Add the message to the page.
+                $('#discussion').append('<li><strong>' + htmlEncode(name)
+                    + '</strong>: ' + htmlEncode(message) + '</li>');
+                $('#discussionchat').append('<li><strong>' + htmlEncode(name)
+                    + '</strong>: ' + htmlEncode(message) + '</li>');
+            };
+
+            $scope.clickchat = function () {
+                chat.server.send($rootScope.userName, $('#messagechat').val());
+                // Clear text box and reset focus for next comment.
+                $('#messagechat').val('').focus();
+            }
+
+        };
 
         function htmlEncode(value) {
             var encodedValue = $('<div />').text(value).html();
             return encodedValue;
         }
 
-        $scope.connect = function (name) {
-
-        }
-
     }])
 
 app.config(function ($httpProvider) {
-    // $httpProvider.defaults.headers.common = {};
-    // $httpProvider.defaults.headers.post = {};
-    // $httpProvider.defaults.headers.put = {};
-    // $httpProvider.defaults.headers.patch = {};
     $httpProvider.defaults.headers["delete"] = {
         'Content-Type': 'application/json;charset=utf-8'
     };

@@ -1,4 +1,5 @@
-# angular2-sandbox
-Sandbox for Angular 2 with typescript
+Angular project
 
+npm install
 npm start
+see reference images for undestand
