@@ -1,4 +1,4 @@
-Asp.net Signalr
+# Asp.net Signalr
 
 Used in a Web API (REST) and  Angular client
 
@@ -8,7 +8,7 @@ Project:
 
 Compile and execute web Api with visual studio, then in a console, execute npm start for open frontend.
 
-USE CASES (See images to understand):
+# USE CASES (See images to understand):
 -Todo list: use 2 instances of client (different browsers)
 -Chat: use with backend webpage and 1 client
 
